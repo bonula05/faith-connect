@@ -20,7 +20,6 @@ dev_dependencies:
 flutter:
   assets:
 
-    - assets/bg_image.jpg
     - assets/home.jpg
     - assets/today.jpg
     - assets/tomorrow.jpg
@@ -29,4 +28,15 @@ flutter:
     - assets/friday.jpg
     - assets/saturday.jpg
     - assets/sunday.jpg
+    - assets/front.jpg
+    - assets/reminders.jpg
+    - assets/profile.jpg
+    - assets/discover.jpg
+    - assets/religious.jpg
+    - assets/meditation.jpg
+    - assets/reflection.jpg
+    - assets/liturgicalbg.jpg
+    - assets/thumbnail.jpg
+    - assets/liturgicalSongs.jpg
+    - assets/profiles.jpg
     
