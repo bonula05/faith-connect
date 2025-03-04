@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
-import 'home_screen.dart'; // Import HomeScreen
-import 'sign_up_screen.dart'; // Import SignUpScreen
+import 'screens/home_screen.dart';
+import 'screens/sign_up_screen.dart';
+
 
 void main() {
   runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -19,6 +22,8 @@ class MyApp extends StatelessWidget {
 }
 
 class LoginScreen extends StatefulWidget {
+  const LoginScreen({super.key});
+
   @override
   _LoginScreenState createState() => _LoginScreenState();
 }
@@ -28,7 +33,6 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
-  // Fake user credentials (Replace with Firebase/Auth API)
   final String _dummyEmail = "user";
   final String _dummyPassword = "pass";
 
@@ -37,13 +41,11 @@ class _LoginScreenState extends State<LoginScreen> {
     String password = _passwordController.text;
 
     if (email == _dummyEmail && password == _dummyPassword) {
-      // Successful login
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => HomeScreen()),
       );
     } else {
-      // Show error message
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text("Invalid email or password"),
@@ -55,28 +57,42 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    double bottomPadding = MediaQuery.of(context).viewInsets.bottom; 
+
     return Scaffold(
       body: Stack(
         children: [
-          // 🔹 Background Image
+          // 🔹 Fullscreen Background Image
           Positioned.fill(
             child: Image.asset(
-              "assets/bg_image.jpg", // Ensure this file exists in assets/
+              "assets/front.jpg",
               fit: BoxFit.cover,
+              errorBuilder: (context, error, stackTrace) => Container(
+                color: Colors.black,
+                child: Center(
+                  child: Icon(Icons.error, color: Colors.red, size: 50),
+                ),
+              ),
             ),
           ),
-          // 🔹 Dark Overlay for readability
+
+          // 🔹 Dark overlay for readability
           Positioned.fill(
             child: Container(color: Colors.black.withOpacity(0.5)),
           ),
 
-          Center(
-            child: SingleChildScrollView(
+          // 🔹 Adjust position only when keyboard appears
+          AnimatedPadding(
+            duration: Duration(milliseconds: 300), // Smooth animation
+            padding: EdgeInsets.only(top: bottomPadding > 0 ? 300 : 410), // Adjust only on focus
+            child: Align(
+              alignment: Alignment.topCenter,
               child: Container(
-                width: 600,
-                padding: EdgeInsets.all(20),
+                width: 350,
+                height: 330, // Fixed height
+                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.85),
+                  color: Colors.white,
                   borderRadius: BorderRadius.circular(10),
                   boxShadow: [
                     BoxShadow(
@@ -87,84 +103,67 @@ class _LoginScreenState extends State<LoginScreen> {
                   ],
                 ),
                 child: Column(
-                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    Icon(Icons.church, size: 80, color: Colors.amber),
-                    SizedBox(height: 10),
-                    Text(
-                      "FAITH CONNECT",
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    Text(
-                      "-- COMMUNITY AND CONNECTION --",
-                      style: TextStyle(color: Colors.black54),
-                    ),
-                    SizedBox(height: 20),
-
-                    // Email Input
-                    TextField(
-                      controller: _emailController,
-                      style: TextStyle(color: Colors.black),
-                      decoration: InputDecoration(
-                        prefixIcon: Icon(Icons.email, color: Colors.black),
-                        hintText: "Email",
-                        hintStyle: TextStyle(color: Colors.black54),
-                        border: OutlineInputBorder(),
-                      ),
-                    ),
-                    SizedBox(height: 10),
-
-                    // Password Input
-                    TextField(
-                      controller: _passwordController,
-                      obscureText: _obscurePassword,
-                      style: TextStyle(color: Colors.black),
-                      decoration: InputDecoration(
-                        prefixIcon: Icon(Icons.lock, color: Colors.black),
-                        hintText: "Password",
-                        hintStyle: TextStyle(color: Colors.black54),
-                        border: OutlineInputBorder(),
-                        suffixIcon: IconButton(
-                          icon: Icon(
-                            _obscurePassword ? Icons.visibility_off : Icons.visibility,
-                            color: Colors.black,
-                          ),
-                          onPressed: () {
-                            setState(() {
-                              _obscurePassword = !_obscurePassword;
-                            });
-                          },
+                    // 🔹 Email Field
+                    SizedBox(
+                      height: 50,
+                      child: TextField(
+                        controller: _emailController,
+                        style: TextStyle(color: Colors.black),
+                        decoration: InputDecoration(
+                          prefixIcon: Icon(Icons.email, color: Colors.black),
+                          hintText: "Email",
+                          hintStyle: TextStyle(color: Colors.black54),
+                          border: OutlineInputBorder(),
+                          contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 12),
+                          isDense: true,
                         ),
                       ),
-                      textInputAction: TextInputAction.done,
-                      onSubmitted: (value) => _signIn(),
                     ),
 
-                    Padding(
-                      padding: EdgeInsets.only(right: 8.0, top: 5),
-                      child: Align(
-                        alignment: Alignment.centerRight,
-                        child: Text("Forgot Password?", style: TextStyle(color: Colors.blue)),
+                    // 🔹 Password Field
+                    SizedBox(
+                      height: 50,
+                      child: TextField(
+                        controller: _passwordController,
+                        obscureText: _obscurePassword,
+                        style: TextStyle(color: Colors.black),
+                        decoration: InputDecoration(
+                          prefixIcon: Icon(Icons.lock, color: Colors.black),
+                          hintText: "Password",
+                          hintStyle: TextStyle(color: Colors.black54),
+                          border: OutlineInputBorder(),
+                          contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 12),
+                          isDense: true,
+                          suffixIcon: IconButton(
+                            icon: Icon(
+                              _obscurePassword ? Icons.visibility_off : Icons.visibility,
+                              color: Colors.black,
+                            ),
+                            onPressed: () {
+                              setState(() {
+                                _obscurePassword = !_obscurePassword;
+                              });
+                            },
+                          ),
+                        ),
+                        textInputAction: TextInputAction.done,
+                        onSubmitted: (value) => _signIn(),
                       ),
                     ),
-                    SizedBox(height: 10),
 
-                    // Sign In Button
+                    // 🔹 Sign In Button
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.amber,
-                        padding: EdgeInsets.symmetric(horizontal: 80, vertical: 15),
+                        padding: EdgeInsets.symmetric(horizontal: 50, vertical: 14),
                       ),
                       onPressed: _signIn,
                       child: Text("Sign In", style: TextStyle(color: Colors.black)),
                     ),
-                    SizedBox(height: 10),
 
-                    // Sign Up Link
+                    // 🔹 Sign Up Link
                     GestureDetector(
                       onTap: () {
                         Navigator.push(
@@ -174,7 +173,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       },
                       child: Text(
                         "Don't have an account? Sign Up here.",
-                        style: TextStyle(color: Colors.blue),
+                        style: TextStyle(color: Colors.blue, fontSize: 12),
                       ),
                     ),
                   ],
